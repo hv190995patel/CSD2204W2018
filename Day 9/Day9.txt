@@ -1,0 +1,1323 @@
+MariaDB [csd2204w18]> desc employees;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| EMPLOYEE_ID    | decimal(6,0) | NO   | PRI | 0       |       |
+| FIRST_NAME     | varchar(20)  | YES  |     | NULL    |       |
+| LAST_NAME      | varchar(25)  | NO   | MUL | NULL    |       |
+| EMAIL          | varchar(25)  | NO   | UNI | NULL    |       |
+| PHONE_NUMBER   | varchar(20)  | YES  |     | NULL    |       |
+| HIRE_DATE      | date         | NO   |     | NULL    |       |
+| JOB_ID         | varchar(10)  | NO   | MUL | NULL    |       |
+| SALARY         | decimal(8,2) | YES  |     | NULL    |       |
+| COMMISSION_PCT | decimal(2,2) | YES  |     | NULL    |       |
+| MANAGER_ID     | decimal(6,0) | YES  | MUL | NULL    |       |
+| DEPARTMENT_ID  | decimal(4,0) | YES  | MUL | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+11 rows in set (0.01 sec)
+
+MariaDB [csd2204w18]> desc departments;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| DEPARTMENT_ID   | decimal(4,0) | NO   | PRI | 0       |       |
+| DEPARTMENT_NAME | varchar(30)  | NO   |     | NULL    |       |
+| MANAGER_ID      | decimal(6,0) | YES  | MUL | NULL    |       |
+| LOCATION_ID     | decimal(4,0) | YES  | MUL | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+4 rows in set (0.03 sec)
+
+MariaDB [csd2204w18]> desc jobs;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| JOB_ID     | varchar(10)  | NO   | PRI |         |       |
+| JOB_TITLE  | varchar(35)  | NO   |     | NULL    |       |
+| MIN_SALARY | decimal(6,0) | YES  |     | NULL    |       |
+| MAX_SALARY | decimal(6,0) | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+4 rows in set (0.06 sec)
+
+MariaDB [csd2204w18]> select employee_id,first_name,last_name from employees AS A WHERE salary 
+    -> > (SELECT AVG(salary) FROM EMPLOYEES where department_id = A.department_id);
++-------------+------------+-----------+
+| employee_id | first_name | last_name |
++-------------+------------+-----------+
+|         100 | Steven     | King      |
+|         103 | Alexander  | Hunold    |
+|         104 | Bruce      | Ernst     |
+|         108 | Nancy      | Greenberg |
+|         109 | Daniel     | Faviet    |
+|         114 | Den        | Raphaely  |
+|         120 | Matthew    | Weiss     |
+|         121 | Adam       | Fripp     |
+|         122 | Payam      | Kaufling  |
+|         123 | Shanta     | Vollman   |
+|         124 | Kevin      | Mourgos   |
+|         137 | Renske     | Ladwig    |
+|         141 | Trenna     | Rajs      |
+|         145 | John       | Russell   |
+|         146 | Karen      | Partners  |
+|         147 | Alberto    | Errazuriz |
+|         148 | Gerald     | Cambrault |
+|         149 | Eleni      | Zlotkey   |
+|         150 | Peter      | Tucker    |
+|         151 | David      | Bernstein |
+|         152 | Peter      | Hall      |
+|         156 | Janette    | King      |
+|         157 | Patrick    | Sully     |
+|         158 | Allan      | McEwen    |
+|         162 | Clara      | Vishney   |
+|         163 | Danielle   | Greene    |
+|         168 | Lisa       | Ozer      |
+|         169 | Harrison   | Bloom     |
+|         170 | Tayler     | Fox       |
+|         174 | Ellen      | Abel      |
+|         184 | Nandita    | Sarchand  |
+|         185 | Alexis     | Bull      |
+|         188 | Kelly      | Chung     |
+|         189 | Jennifer   | Dilly     |
+|         192 | Sarah      | Bell      |
+|         193 | Britney    | Everett   |
+|         201 | Michael    | Hartstein |
+|         205 | Shelley    | Higgins   |
++-------------+------------+-----------+
+38 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,first_name,last_name,salary from employees AS A WHERE salary < (SELECT MIN(salary) FROM EMPLOYEES where department_id <> A.department_id);
++-------------+------------+------------+---------+
+| employee_id | first_name | last_name  | salary  |
++-------------+------------+------------+---------+
+|         127 | James      | Landry     | 2400.00 |
+|         128 | Steven     | Markle     | 2200.00 |
+|         132 | TJ         | Olson      | 2100.00 |
+|         135 | Ki         | Gee        | 2400.00 |
+|         136 | Hazel      | Philtanker | 2200.00 |
++-------------+------------+------------+---------+
+5 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> desc countries;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| COUNTRY_ID   | varchar(2)    | NO   | PRI | NULL    |       |
+| COUNTRY_NAME | varchar(40)   | YES  |     | NULL    |       |
+| REGION_ID    | decimal(10,0) | YES  | MUL | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+3 rows in set (0.02 sec)
+
+MariaDB [csd2204w18]> desc locations;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| LOCATION_ID    | decimal(4,0) | NO   | PRI | 0       |       |
+| STREET_ADDRESS | varchar(40)  | YES  |     | NULL    |       |
+| POSTAL_CODE    | varchar(12)  | YES  |     | NULL    |       |
+| CITY           | varchar(30)  | NO   | MUL | NULL    |       |
+| STATE_PROVINCE | varchar(25)  | YES  | MUL | NULL    |       |
+| COUNTRY_ID     | varchar(2)   | YES  | MUL | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> desc employees;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| EMPLOYEE_ID    | decimal(6,0) | NO   | PRI | 0       |       |
+| FIRST_NAME     | varchar(20)  | YES  |     | NULL    |       |
+| LAST_NAME      | varchar(25)  | NO   | MUL | NULL    |       |
+| EMAIL          | varchar(25)  | NO   | UNI | NULL    |       |
+| PHONE_NUMBER   | varchar(20)  | YES  |     | NULL    |       |
+| HIRE_DATE      | date         | NO   |     | NULL    |       |
+| JOB_ID         | varchar(10)  | NO   | MUL | NULL    |       |
+| SALARY         | decimal(8,2) | YES  |     | NULL    |       |
+| COMMISSION_PCT | decimal(2,2) | YES  |     | NULL    |       |
+| MANAGER_ID     | decimal(6,0) | YES  | MUL | NULL    |       |
+| DEPARTMENT_ID  | decimal(4,0) | YES  | MUL | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+11 rows in set (0.02 sec)
+
+MariaDB [csd2204w18]> select * from countries;
++------------+--------------------------+-----------+
+| COUNTRY_ID | COUNTRY_NAME             | REGION_ID |
++------------+--------------------------+-----------+
+| AR         | Argentina                |         2 |
+| AU         | Australia                |         3 |
+| BE         | Belgium                  |         1 |
+| BR         | Brazil                   |         2 |
+| CA         | Canada                   |         2 |
+| CH         | Switzerland              |         1 |
+| CN         | China                    |         3 |
+| DE         | Germany                  |         1 |
+| DK         | Denmark                  |         1 |
+| EG         | Egypt                    |         4 |
+| FR         | France                   |         1 |
+| HK         | HongKong                 |         3 |
+| IL         | Israel                   |         4 |
+| IN         | India                    |         3 |
+| IT         | Italy                    |         1 |
+| JP         | Japan                    |         3 |
+| KW         | Kuwait                   |         4 |
+| MX         | Mexico                   |         2 |
+| NG         | Nigeria                  |         4 |
+| NL         | Netherlands              |         1 |
+| SG         | Singapore                |         3 |
+| UK         | United Kingdom           |         1 |
+| US         | United States of America |         2 |
+| ZM         | Zambia                   |         4 |
+| ZW         | Zimbabwe                 |         4 |
++------------+--------------------------+-----------+
+25 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> desc department;
+ERROR 1146 (42S02): Table 'csd2204w18.department' doesn't exist
+MariaDB [csd2204w18]> desc departments;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| DEPARTMENT_ID   | decimal(4,0) | NO   | PRI | 0       |       |
+| DEPARTMENT_NAME | varchar(30)  | NO   |     | NULL    |       |
+| MANAGER_ID      | decimal(6,0) | YES  | MUL | NULL    |       |
+| LOCATION_ID     | decimal(4,0) | YES  | MUL | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from locatins;
+ERROR 1146 (42S02): Table 'csd2204w18.locatins' doesn't exist
+MariaDB [csd2204w18]> select * from locations;
++-------------+---------------------------+--------------+---------------------+-------------------+------------+
+| LOCATION_ID | STREET_ADDRESS            | POSTAL_CODE  | CITY                | STATE_PROVINCE    | COUNTRY_ID |
++-------------+---------------------------+--------------+---------------------+-------------------+------------+
+|        1000 | 1297 Via Cola di Rie      | 989          | Roma                |                   | IT         |
+|        1100 | 93091 Calle della Testa   | 10934        | Venice              |                   | IT         |
+|        1200 | 2017 Shinjuku-ku          | 1689         | Tokyo               | Tokyo Prefecture  | JP         |
+|        1300 | 9450 Kamiya-cho           | 6823         | Hiroshima           |                   | JP         |
+|        1400 | 2014 Jabberwocky Rd       | 26192        | Southlake           | Texas             | US         |
+|        1500 | 2011 Interiors Blvd       | 99236        | South San Francisco | California        | US         |
+|        1600 | 2007 Zagora St            | 50090        | South Brunswick     | New Jersey        | US         |
+|        1700 | 2004 Charade Rd           | 98199        | Seattle             | Washington        | US         |
+|        1800 | 147 Spadina Ave           | M5V 2L7      | Toronto             | Ontario           | CA         |
+|        1900 | 6092 Boxwood St           | YSW 9T2      | Whitehorse          | Yukon             | CA         |
+|        2000 | 40-5-12 Laogianggen       | 190518       | Beijing             |                   | CN         |
+|        2100 | 1298 Vileparle (E)        | 490231       | Bombay              | Maharashtra       | IN         |
+|        2200 | 12-98 Victoria Street     | 2901         | Sydney              | New South Wales   | AU         |
+|        2300 | 198 Clementi North        | 540198       | Singapore           |                   | SG         |
+|        2400 | 8204 Arthur St            |              | London              |                   | UK         |
+|        2500 | "Magdalen Centre          |  The Oxford  | OX9 9ZB             | Oxford            | Ox         |
+|        2600 | 9702 Chester Road         | 9629850293   | Stretford           | Manchester        | UK         |
+|        2700 | Schwanthalerstr. 7031     | 80925        | Munich              | Bavaria           | DE         |
+|        2800 | Rua Frei Caneca 1360      | 01307-002    | Sao Paulo           | Sao Paulo         | BR         |
+|        2900 | 20 Rue des Corps-Saints   | 1730         | Geneva              | Geneve            | CH         |
+|        3000 | Murtenstrasse 921         | 3095         | Bern                | BE                | CH         |
+|        3100 | Pieter Breughelstraat 837 | 3029SK       | Utrecht             | Utrecht           | NL         |
+|        3200 | Mariano Escobedo 9991     | 11932        | Mexico City         | "Distrito Federal | "          |
++-------------+---------------------------+--------------+---------------------+-------------------+------------+
+23 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from locations where country_id='CA';
++-------------+-----------------+-------------+------------+----------------+------------+
+| LOCATION_ID | STREET_ADDRESS  | POSTAL_CODE | CITY       | STATE_PROVINCE | COUNTRY_ID |
++-------------+-----------------+-------------+------------+----------------+------------+
+|        1800 | 147 Spadina Ave | M5V 2L7     | Toronto    | Ontario        | CA         |
+|        1900 | 6092 Boxwood St | YSW 9T2     | Whitehorse | Yukon          | CA         |
++-------------+-----------------+-------------+------------+----------------+------------+
+2 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select departmnent_id from departmnents where department_id IN (select * from locations where country_id='CA');
+ERROR 1146 (42S02): Table 'csd2204w18.departmnents' doesn't exist
+MariaDB [csd2204w18]> select departmnent_id from departments where department_id IN (select * from locations where country_id='CA');
+ERROR 1054 (42S22): Unknown column 'departmnent_id' in 'field list'
+MariaDB [csd2204w18]> select department_id from departments where location_id IN (select location_id from locations where country_id='CA');
++---------------+
+| department_id |
++---------------+
+|            20 |
++---------------+
+1 row in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,first_name,salary from employees where department_id IN(select department_id from departments where location_id IN (select location_id from locations where country_id='CA'));
++-------------+------------+----------+
+| employee_id | first_name | salary   |
++-------------+------------+----------+
+|         201 | Michael    | 13000.00 |
+|         202 | Pat        |  6000.00 |
++-------------+------------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,first_name,salary from employees where salary < (select MIN(saalry)) from employees where department_id IN(select department_id from departments where location_id IN (select location_id from locations where country_id='CA'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'from employees where department_id IN(select department_id from departments wher' at line 1
+MariaDB [csd2204w18]> select employee_id,first_name,salary from employees where salary < (select MIN(salary)) from employees where department_id IN(select department_id from departments where location_id IN (select location_id from locations where country_id='CA'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'from employees where department_id IN(select department_id from departments wher' at line 1
+MariaDB [csd2204w18]> select employee_id,first_name,salary from employees where salary < (select MIN(salary)) from employees where department_id IN(select department_id from departments where location_id IN (select location_id from locations where country_id='CA')));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'from employees where department_id IN(select department_id from departments wher' at line 1
+MariaDB [csd2204w18]> select employee_id,first_name,salary from employees where salary < (select MIN(salary) from employees where department_id IN(select department_id from departments where location_id IN (select location_id from locations where country_id='CA')));
++-------------+------------+---------+
+| employee_id | first_name | salary  |
++-------------+------------+---------+
+|         105 | David      | 4800.00 |
+|         106 | Valli      | 4800.00 |
+|         107 | Diana      | 4200.00 |
+|         115 | Alexander  | 3100.00 |
+|         116 | Shelli     | 2900.00 |
+|         117 | Sigal      | 2800.00 |
+|         118 | Guy        | 2600.00 |
+|         119 | Karen      | 2500.00 |
+|         124 | Kevin      | 5800.00 |
+|         125 | Julia      | 3200.00 |
+|         126 | Irene      | 2700.00 |
+|         127 | James      | 2400.00 |
+|         128 | Steven     | 2200.00 |
+|         129 | Laura      | 3300.00 |
+|         130 | Mozhe      | 2800.00 |
+|         131 | James      | 2500.00 |
+|         132 | TJ         | 2100.00 |
+|         133 | Jason      | 3300.00 |
+|         134 | Michael    | 2900.00 |
+|         135 | Ki         | 2400.00 |
+|         136 | Hazel      | 2200.00 |
+|         137 | Renske     | 3600.00 |
+|         138 | Stephen    | 3200.00 |
+|         139 | John       | 2700.00 |
+|         140 | Joshua     | 2500.00 |
+|         141 | Trenna     | 3500.00 |
+|         142 | Curtis     | 3100.00 |
+|         143 | Randall    | 2600.00 |
+|         144 | Peter      | 2500.00 |
+|         180 | Winston    | 3200.00 |
+|         181 | Jean       | 3100.00 |
+|         182 | Martha     | 2500.00 |
+|         183 | Girard     | 2800.00 |
+|         184 | Nandita    | 4200.00 |
+|         185 | Alexis     | 4100.00 |
+|         186 | Julia      | 3400.00 |
+|         187 | Anthony    | 3000.00 |
+|         188 | Kelly      | 3800.00 |
+|         189 | Jennifer   | 3600.00 |
+|         190 | Timothy    | 2900.00 |
+|         191 | Randall    | 2500.00 |
+|         192 | Sarah      | 4000.00 |
+|         193 | Britney    | 3900.00 |
+|         194 | Samuel     | 3200.00 |
+|         195 | Vance      | 2800.00 |
+|         196 | Alana      | 3100.00 |
+|         197 | Kevin      | 3000.00 |
+|         198 | Donald     | 2600.00 |
+|         199 | Douglas    | 2600.00 |
+|         200 | Jennifer   | 4400.00 |
++-------------+------------+---------+
+50 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> desc employees;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| EMPLOYEE_ID    | decimal(6,0) | NO   | PRI | 0       |       |
+| FIRST_NAME     | varchar(20)  | YES  |     | NULL    |       |
+| LAST_NAME      | varchar(25)  | NO   | MUL | NULL    |       |
+| EMAIL          | varchar(25)  | NO   | UNI | NULL    |       |
+| PHONE_NUMBER   | varchar(20)  | YES  |     | NULL    |       |
+| HIRE_DATE      | date         | NO   |     | NULL    |       |
+| JOB_ID         | varchar(10)  | NO   | MUL | NULL    |       |
+| SALARY         | decimal(8,2) | YES  |     | NULL    |       |
+| COMMISSION_PCT | decimal(2,2) | YES  |     | NULL    |       |
+| MANAGER_ID     | decimal(6,0) | YES  | MUL | NULL    |       |
+| DEPARTMENT_ID  | decimal(4,0) | YES  | MUL | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+11 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from countries;
++------------+--------------------------+-----------+
+| COUNTRY_ID | COUNTRY_NAME             | REGION_ID |
++------------+--------------------------+-----------+
+| AR         | Argentina                |         2 |
+| AU         | Australia                |         3 |
+| BE         | Belgium                  |         1 |
+| BR         | Brazil                   |         2 |
+| CA         | Canada                   |         2 |
+| CH         | Switzerland              |         1 |
+| CN         | China                    |         3 |
+| DE         | Germany                  |         1 |
+| DK         | Denmark                  |         1 |
+| EG         | Egypt                    |         4 |
+| FR         | France                   |         1 |
+| HK         | HongKong                 |         3 |
+| IL         | Israel                   |         4 |
+| IN         | India                    |         3 |
+| IT         | Italy                    |         1 |
+| JP         | Japan                    |         3 |
+| KW         | Kuwait                   |         4 |
+| MX         | Mexico                   |         2 |
+| NG         | Nigeria                  |         4 |
+| NL         | Netherlands              |         1 |
+| SG         | Singapore                |         3 |
+| UK         | United Kingdom           |         1 |
+| US         | United States of America |         2 |
+| ZM         | Zambia                   |         4 |
+| ZW         | Zimbabwe                 |         4 |
++------------+--------------------------+-----------+
+25 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from locations where country_id='US';
++-------------+---------------------+-------------+---------------------+----------------+------------+
+| LOCATION_ID | STREET_ADDRESS      | POSTAL_CODE | CITY                | STATE_PROVINCE | COUNTRY_ID |
++-------------+---------------------+-------------+---------------------+----------------+------------+
+|        1400 | 2014 Jabberwocky Rd | 26192       | Southlake           | Texas          | US         |
+|        1500 | 2011 Interiors Blvd | 99236       | South San Francisco | California     | US         |
+|        1600 | 2007 Zagora St      | 50090       | South Brunswick     | New Jersey     | US         |
+|        1700 | 2004 Charade Rd     | 98199       | Seattle             | Washington     | US         |
++-------------+---------------------+-------------+---------------------+----------------+------------+
+4 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select b.first_name,b.last_name from employees b where NOT EXISTS (SELECT 'X' from employees a where a.manager_id = b.employee_id);
++-------------+-------------+
+| first_name  | last_name   |
++-------------+-------------+
+| Bruce       | Ernst       |
+| David       | Austin      |
+| Valli       | Pataballa   |
+| Diana       | Lorentz     |
+| Daniel      | Faviet      |
+| John        | Chen        |
+| Ismael      | Sciarra     |
+| Jose Manuel | Urman       |
+| Luis        | Popp        |
+| Alexander   | Khoo        |
+| Shelli      | Baida       |
+| Sigal       | Tobias      |
+| Guy         | Himuro      |
+| Karen       | Colmenares  |
+| Julia       | Nayer       |
+| Irene       | Mikkilineni |
+| James       | Landry      |
+| Steven      | Markle      |
+| Laura       | Bissot      |
+| Mozhe       | Atkinson    |
+| James       | Marlow      |
+| TJ          | Olson       |
+| Jason       | Mallin      |
+| Michael     | Rogers      |
+| Ki          | Gee         |
+| Hazel       | Philtanker  |
+| Renske      | Ladwig      |
+| Stephen     | Stiles      |
+| John        | Seo         |
+| Joshua      | Patel       |
+| Trenna      | Rajs        |
+| Curtis      | Davies      |
+| Randall     | Matos       |
+| Peter       | Vargas      |
+| Peter       | Tucker      |
+| David       | Bernstein   |
+| Peter       | Hall        |
+| Christopher | Olsen       |
+| Nanette     | Cambrault   |
+| Oliver      | Tuvault     |
+| Janette     | King        |
+| Patrick     | Sully       |
+| Allan       | McEwen      |
+| Lindsey     | Smith       |
+| Louise      | Doran       |
+| Sarath      | Sewall      |
+| Clara       | Vishney     |
+| Danielle    | Greene      |
+| Mattea      | Marvins     |
+| David       | Lee         |
+| Sundar      | Ande        |
+| Amit        | Banda       |
+| Lisa        | Ozer        |
+| Harrison    | Bloom       |
+| Tayler      | Fox         |
+| William     | Smith       |
+| Elizabeth   | Bates       |
+| Sundita     | Kumar       |
+| Ellen       | Abel        |
+| Alyssa      | Hutton      |
+| Jonathon    | Taylor      |
+| Jack        | Livingston  |
+| Kimberely   | Grant       |
+| Charles     | Johnson     |
+| Winston     | Taylor      |
+| Jean        | Fleaur      |
+| Martha      | Sullivan    |
+| Girard      | Geoni       |
+| Nandita     | Sarchand    |
+| Alexis      | Bull        |
+| Julia       | Dellinger   |
+| Anthony     | Cabrio      |
+| Kelly       | Chung       |
+| Jennifer    | Dilly       |
+| Timothy     | Gates       |
+| Randall     | Perkins     |
+| Sarah       | Bell        |
+| Britney     | Everett     |
+| Samuel      | McCain      |
+| Vance       | Jones       |
+| Alana       | Walsh       |
+| Kevin       | Feeney      |
+| Donald      | OConnell    |
+| Douglas     | Grant       |
+| Jennifer    | Whalen      |
+| Pat         | Fay         |
+| Susan       | Mavris      |
+| Hermann     | Baer        |
+| William     | Gietz       |
++-------------+-------------+
+89 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select b.first_name,b.last_name from employees b where EXISTS (SELECT 'X' from employees a where a.manager_id = b.employee_id);
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| Steven     | King      |
+| Neena      | Kochhar   |
+| Lex        | De Haan   |
+| Alexander  | Hunold    |
+| Nancy      | Greenberg |
+| Den        | Raphaely  |
+| Matthew    | Weiss     |
+| Adam       | Fripp     |
+| Payam      | Kaufling  |
+| Shanta     | Vollman   |
+| Kevin      | Mourgos   |
+| John       | Russell   |
+| Karen      | Partners  |
+| Alberto    | Errazuriz |
+| Gerald     | Cambrault |
+| Eleni      | Zlotkey   |
+| Michael    | Hartstein |
+| Shelley    | Higgins   |
++------------+-----------+
+18 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select first_name,last_name from employees where (employee_id IN (select manager_id from employees));
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| Steven     | King      |
+| Neena      | Kochhar   |
+| Lex        | De Haan   |
+| Alexander  | Hunold    |
+| Nancy      | Greenberg |
+| Den        | Raphaely  |
+| Matthew    | Weiss     |
+| Adam       | Fripp     |
+| Payam      | Kaufling  |
+| Shanta     | Vollman   |
+| Kevin      | Mourgos   |
+| John       | Russell   |
+| Karen      | Partners  |
+| Alberto    | Errazuriz |
+| Gerald     | Cambrault |
+| Eleni      | Zlotkey   |
+| Michael    | Hartstein |
+| Shelley    | Higgins   |
++------------+-----------+
+18 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select department_id from employees where (employee_id IN (select manager_id from employees));
++---------------+
+| department_id |
++---------------+
+|            90 |
+|            90 |
+|            90 |
+|            60 |
+|           100 |
+|            30 |
+|            50 |
+|            50 |
+|            50 |
+|            50 |
+|            50 |
+|            80 |
+|            80 |
+|            80 |
+|            80 |
+|            80 |
+|            20 |
+|           110 |
++---------------+
+18 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary,department_id from employees where (employee_id IN (select manager_id from employees)) AND (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1242 (21000): Subquery returns more than 1 row
+MariaDB [csd2204w18]> select employee_id,salary,department_id from employees where (employee_id IN (select manager_id from employees)) AND (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1242 (21000): Subquery returns more than 1 row
+MariaDB [csd2204w18]> select employee_id,salary,department_id from employees where (employee_id IN (select manager_id from employees))  AND department_id (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'select department_id from departments where location_id IN (SELECT LOCATION_ID f' at line 1
+MariaDB [csd2204w18]> select employee_id,salary,department_id from employees where (employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
++-------------+----------+---------------+
+| employee_id | salary   | department_id |
++-------------+----------+---------------+
+|         103 |  9000.00 |            60 |
+|         120 |  8000.00 |            50 |
+|         121 |  8200.00 |            50 |
+|         122 |  7900.00 |            50 |
+|         123 |  6500.00 |            50 |
+|         124 |  5800.00 |            50 |
+|         100 | 24000.00 |            90 |
+|         101 | 17000.00 |            90 |
+|         102 | 17000.00 |            90 |
+|         108 | 12000.00 |           100 |
+|         114 | 11000.00 |            30 |
+|         205 | 12000.00 |           110 |
++-------------+----------+---------------+
+12 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees where (employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         103 |  9000.00 |
+|         120 |  8000.00 |
+|         121 |  8200.00 |
+|         122 |  7900.00 |
+|         123 |  6500.00 |
+|         124 |  5800.00 |
+|         100 | 24000.00 |
+|         101 | 17000.00 |
+|         102 | 17000.00 |
+|         108 | 12000.00 |
+|         114 | 11000.00 |
+|         205 | 12000.00 |
++-------------+----------+
+12 rows in set (0.02 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees where (employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         103 |  9000.00 |
+|         120 |  8000.00 |
+|         121 |  8200.00 |
+|         122 |  7900.00 |
+|         123 |  6500.00 |
+|         124 |  5800.00 |
+|         100 | 24000.00 |
+|         101 | 17000.00 |
+|         102 | 17000.00 |
+|         108 | 12000.00 |
+|         114 | 11000.00 |
+|         205 | 12000.00 |
++-------------+----------+
+12 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select b.first_name,b.last_name from employees b where NOT EXISTS (SELECT 'X' from employees a where a.manager_id = b.employee_id);
++-------------+-------------+
+| first_name  | last_name   |
++-------------+-------------+
+| Bruce       | Ernst       |
+| David       | Austin      |
+| Valli       | Pataballa   |
+| Diana       | Lorentz     |
+| Daniel      | Faviet      |
+| John        | Chen        |
+| Ismael      | Sciarra     |
+| Jose Manuel | Urman       |
+| Luis        | Popp        |
+| Alexander   | Khoo        |
+| Shelli      | Baida       |
+| Sigal       | Tobias      |
+| Guy         | Himuro      |
+| Karen       | Colmenares  |
+| Julia       | Nayer       |
+| Irene       | Mikkilineni |
+| James       | Landry      |
+| Steven      | Markle      |
+| Laura       | Bissot      |
+| Mozhe       | Atkinson    |
+| James       | Marlow      |
+| TJ          | Olson       |
+| Jason       | Mallin      |
+| Michael     | Rogers      |
+| Ki          | Gee         |
+| Hazel       | Philtanker  |
+| Renske      | Ladwig      |
+| Stephen     | Stiles      |
+| John        | Seo         |
+| Joshua      | Patel       |
+| Trenna      | Rajs        |
+| Curtis      | Davies      |
+| Randall     | Matos       |
+| Peter       | Vargas      |
+| Peter       | Tucker      |
+| David       | Bernstein   |
+| Peter       | Hall        |
+| Christopher | Olsen       |
+| Nanette     | Cambrault   |
+| Oliver      | Tuvault     |
+| Janette     | King        |
+| Patrick     | Sully       |
+| Allan       | McEwen      |
+| Lindsey     | Smith       |
+| Louise      | Doran       |
+| Sarath      | Sewall      |
+| Clara       | Vishney     |
+| Danielle    | Greene      |
+| Mattea      | Marvins     |
+| David       | Lee         |
+| Sundar      | Ande        |
+| Amit        | Banda       |
+| Lisa        | Ozer        |
+| Harrison    | Bloom       |
+| Tayler      | Fox         |
+| William     | Smith       |
+| Elizabeth   | Bates       |
+| Sundita     | Kumar       |
+| Ellen       | Abel        |
+| Alyssa      | Hutton      |
+| Jonathon    | Taylor      |
+| Jack        | Livingston  |
+| Kimberely   | Grant       |
+| Charles     | Johnson     |
+| Winston     | Taylor      |
+| Jean        | Fleaur      |
+| Martha      | Sullivan    |
+| Girard      | Geoni       |
+| Nandita     | Sarchand    |
+| Alexis      | Bull        |
+| Julia       | Dellinger   |
+| Anthony     | Cabrio      |
+| Kelly       | Chung       |
+| Jennifer    | Dilly       |
+| Timothy     | Gates       |
+| Randall     | Perkins     |
+| Sarah       | Bell        |
+| Britney     | Everett     |
+| Samuel      | McCain      |
+| Vance       | Jones       |
+| Alana       | Walsh       |
+| Kevin       | Feeney      |
+| Donald      | OConnell    |
+| Douglas     | Grant       |
+| Jennifer    | Whalen      |
+| Pat         | Fay         |
+| Susan       | Mavris      |
+| Hermann     | Baer        |
+| William     | Gietz       |
++-------------+-------------+
+89 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary,department_id from employees where (employee_id NOT IN (select manager_id from employees))  AND department_id (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'select department_id from departments where location_id IN (SELECT LOCATION_ID f' at line 1
+MariaDB [csd2204w18]> select employee_id,salary,department_id from employees where (employee_id IN (select manager_id from employees))  AND department_id (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'select department_id from departments where location_id IN (SELECT LOCATION_ID f' at line 1
+MariaDB [csd2204w18]> select employee_id,salary,department_id from employees where (employee_id IN (select manager_id from employees))  AND department_id (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'select department_id from departments where location_id IN (SELECT LOCATION_ID f' at line 1
+MariaDB [csd2204w18]> select employee_id,salary from employees where (employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         103 |  9000.00 |
+|         120 |  8000.00 |
+|         121 |  8200.00 |
+|         122 |  7900.00 |
+|         123 |  6500.00 |
+|         124 |  5800.00 |
+|         100 | 24000.00 |
+|         101 | 17000.00 |
+|         102 | 17000.00 |
+|         108 | 12000.00 |
+|         114 | 11000.00 |
+|         205 | 12000.00 |
++-------------+----------+
+12 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US');
++---------------+
+| department_id |
++---------------+
+|            60 |
+|            50 |
+|            10 |
+|            30 |
+|            90 |
+|           100 |
+|           110 |
+|           120 |
+|           130 |
+|           140 |
+|           150 |
+|           160 |
+|           170 |
+|           180 |
+|           190 |
+|           200 |
+|           210 |
+|           220 |
+|           230 |
+|           240 |
+|           250 |
+|           260 |
+|           270 |
++---------------+
+23 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees;
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         100 | 24000.00 |
+|         101 | 17000.00 |
+|         102 | 17000.00 |
+|         103 |  9000.00 |
+|         104 |  6000.00 |
+|         105 |  4800.00 |
+|         106 |  4800.00 |
+|         107 |  4200.00 |
+|         108 | 12000.00 |
+|         109 |  9000.00 |
+|         110 |  8200.00 |
+|         111 |  7700.00 |
+|         112 |  7800.00 |
+|         113 |  6900.00 |
+|         114 | 11000.00 |
+|         115 |  3100.00 |
+|         116 |  2900.00 |
+|         117 |  2800.00 |
+|         118 |  2600.00 |
+|         119 |  2500.00 |
+|         120 |  8000.00 |
+|         121 |  8200.00 |
+|         122 |  7900.00 |
+|         123 |  6500.00 |
+|         124 |  5800.00 |
+|         125 |  3200.00 |
+|         126 |  2700.00 |
+|         127 |  2400.00 |
+|         128 |  2200.00 |
+|         129 |  3300.00 |
+|         130 |  2800.00 |
+|         131 |  2500.00 |
+|         132 |  2100.00 |
+|         133 |  3300.00 |
+|         134 |  2900.00 |
+|         135 |  2400.00 |
+|         136 |  2200.00 |
+|         137 |  3600.00 |
+|         138 |  3200.00 |
+|         139 |  2700.00 |
+|         140 |  2500.00 |
+|         141 |  3500.00 |
+|         142 |  3100.00 |
+|         143 |  2600.00 |
+|         144 |  2500.00 |
+|         145 | 14000.00 |
+|         146 | 13500.00 |
+|         147 | 12000.00 |
+|         148 | 11000.00 |
+|         149 | 10500.00 |
+|         150 | 10000.00 |
+|         151 |  9500.00 |
+|         152 |  9000.00 |
+|         153 |  8000.00 |
+|         154 |  7500.00 |
+|         155 |  7000.00 |
+|         156 | 10000.00 |
+|         157 |  9500.00 |
+|         158 |  9000.00 |
+|         159 |  8000.00 |
+|         160 |  7500.00 |
+|         161 |  7000.00 |
+|         162 | 10500.00 |
+|         163 |  9500.00 |
+|         164 |  7200.00 |
+|         165 |  6800.00 |
+|         166 |  6400.00 |
+|         167 |  6200.00 |
+|         168 | 11500.00 |
+|         169 | 10000.00 |
+|         170 |  9600.00 |
+|         171 |  7400.00 |
+|         172 |  7300.00 |
+|         173 |  6100.00 |
+|         174 | 11000.00 |
+|         175 |  8800.00 |
+|         176 |  8600.00 |
+|         177 |  8400.00 |
+|         178 |  7000.00 |
+|         179 |  6200.00 |
+|         180 |  3200.00 |
+|         181 |  3100.00 |
+|         182 |  2500.00 |
+|         183 |  2800.00 |
+|         184 |  4200.00 |
+|         185 |  4100.00 |
+|         186 |  3400.00 |
+|         187 |  3000.00 |
+|         188 |  3800.00 |
+|         189 |  3600.00 |
+|         190 |  2900.00 |
+|         191 |  2500.00 |
+|         192 |  4000.00 |
+|         193 |  3900.00 |
+|         194 |  3200.00 |
+|         195 |  2800.00 |
+|         196 |  3100.00 |
+|         197 |  3000.00 |
+|         198 |  2600.00 |
+|         199 |  2600.00 |
+|         200 |  4400.00 |
+|         201 | 13000.00 |
+|         202 |  6000.00 |
+|         203 |  6500.00 |
+|         204 | 10000.00 |
+|         205 | 12000.00 |
+|         206 |  8300.00 |
++-------------+----------+
+107 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees > select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '> select department_id from departments where location_id IN (SELECT LOCATION_ID' at line 1
+MariaDB [csd2204w18]> select employee_id,salary from employees > salary IN(select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '> salary IN(select department_id from departments where location_id IN (SELECT L' at line 1
+MariaDB [csd2204w18]> select employee_id,salary from employees WHERE salary IN(select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+Empty set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees WHERE salary > IN(select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'IN(select department_id from departments where location_id IN (SELECT LOCATION_I' at line 1
+MariaDB [csd2204w18]> select employee_id,salary from employees WHERE salary IN(select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
+Empty set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees where (employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         103 |  9000.00 |
+|         120 |  8000.00 |
+|         121 |  8200.00 |
+|         122 |  7900.00 |
+|         123 |  6500.00 |
+|         124 |  5800.00 |
+|         100 | 24000.00 |
+|         101 | 17000.00 |
+|         102 | 17000.00 |
+|         108 | 12000.00 |
+|         114 | 11000.00 |
+|         205 | 12000.00 |
++-------------+----------+
+12 rows in set (0.02 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees where (employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         103 |  9000.00 |
+|         120 |  8000.00 |
+|         121 |  8200.00 |
+|         122 |  7900.00 |
+|         123 |  6500.00 |
+|         124 |  5800.00 |
+|         100 | 24000.00 |
+|         101 | 17000.00 |
+|         102 | 17000.00 |
+|         108 | 12000.00 |
+|         114 | 11000.00 |
+|         205 | 12000.00 |
++-------------+----------+
+12 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees where (employee_id NOT IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US'));
++-------------+---------+
+| employee_id | salary  |
++-------------+---------+
+|         104 | 6000.00 |
+|         105 | 4800.00 |
+|         106 | 4800.00 |
+|         107 | 4200.00 |
+|         125 | 3200.00 |
+|         126 | 2700.00 |
+|         127 | 2400.00 |
+|         128 | 2200.00 |
+|         129 | 3300.00 |
+|         130 | 2800.00 |
+|         131 | 2500.00 |
+|         132 | 2100.00 |
+|         133 | 3300.00 |
+|         134 | 2900.00 |
+|         135 | 2400.00 |
+|         136 | 2200.00 |
+|         137 | 3600.00 |
+|         138 | 3200.00 |
+|         139 | 2700.00 |
+|         140 | 2500.00 |
+|         141 | 3500.00 |
+|         142 | 3100.00 |
+|         143 | 2600.00 |
+|         144 | 2500.00 |
+|         180 | 3200.00 |
+|         181 | 3100.00 |
+|         182 | 2500.00 |
+|         183 | 2800.00 |
+|         184 | 4200.00 |
+|         185 | 4100.00 |
+|         186 | 3400.00 |
+|         187 | 3000.00 |
+|         188 | 3800.00 |
+|         189 | 3600.00 |
+|         190 | 2900.00 |
+|         191 | 2500.00 |
+|         192 | 4000.00 |
+|         193 | 3900.00 |
+|         194 | 3200.00 |
+|         195 | 2800.00 |
+|         196 | 3100.00 |
+|         197 | 3000.00 |
+|         198 | 2600.00 |
+|         199 | 2600.00 |
+|         200 | 4400.00 |
+|         115 | 3100.00 |
+|         116 | 2900.00 |
+|         117 | 2800.00 |
+|         118 | 2600.00 |
+|         119 | 2500.00 |
+|         109 | 9000.00 |
+|         110 | 8200.00 |
+|         111 | 7700.00 |
+|         112 | 7800.00 |
+|         113 | 6900.00 |
+|         206 | 8300.00 |
++-------------+---------+
+56 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees where(salary > ANY(SELECT salary from employees where(employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US')))) AND employee_id NOT IN(select manager_id from employees);
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         104 |  6000.00 |
+|         109 |  9000.00 |
+|         110 |  8200.00 |
+|         111 |  7700.00 |
+|         112 |  7800.00 |
+|         113 |  6900.00 |
+|         150 | 10000.00 |
+|         151 |  9500.00 |
+|         152 |  9000.00 |
+|         153 |  8000.00 |
+|         154 |  7500.00 |
+|         155 |  7000.00 |
+|         156 | 10000.00 |
+|         157 |  9500.00 |
+|         158 |  9000.00 |
+|         159 |  8000.00 |
+|         160 |  7500.00 |
+|         161 |  7000.00 |
+|         162 | 10500.00 |
+|         163 |  9500.00 |
+|         164 |  7200.00 |
+|         165 |  6800.00 |
+|         166 |  6400.00 |
+|         167 |  6200.00 |
+|         168 | 11500.00 |
+|         169 | 10000.00 |
+|         170 |  9600.00 |
+|         171 |  7400.00 |
+|         172 |  7300.00 |
+|         173 |  6100.00 |
+|         174 | 11000.00 |
+|         175 |  8800.00 |
+|         176 |  8600.00 |
+|         177 |  8400.00 |
+|         178 |  7000.00 |
+|         179 |  6200.00 |
+|         202 |  6000.00 |
+|         203 |  6500.00 |
+|         204 | 10000.00 |
+|         206 |  8300.00 |
++-------------+----------+
+40 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select employee_id,salary from employees where(salary > ANY(SELECT salary from employees where(employee_id IN (select manager_id from employees))  AND department_id IN (select department_id from departments where location_id IN (SELECT LOCATION_ID from locations where country_id='US')))) AND employee_id NOT IN(select manager_id from employees);
++-------------+----------+
+| employee_id | salary   |
++-------------+----------+
+|         104 |  6000.00 |
+|         109 |  9000.00 |
+|         110 |  8200.00 |
+|         111 |  7700.00 |
+|         112 |  7800.00 |
+|         113 |  6900.00 |
+|         150 | 10000.00 |
+|         151 |  9500.00 |
+|         152 |  9000.00 |
+|         153 |  8000.00 |
+|         154 |  7500.00 |
+|         155 |  7000.00 |
+|         156 | 10000.00 |
+|         157 |  9500.00 |
+|         158 |  9000.00 |
+|         159 |  8000.00 |
+|         160 |  7500.00 |
+|         161 |  7000.00 |
+|         162 | 10500.00 |
+|         163 |  9500.00 |
+|         164 |  7200.00 |
+|         165 |  6800.00 |
+|         166 |  6400.00 |
+|         167 |  6200.00 |
+|         168 | 11500.00 |
+|         169 | 10000.00 |
+|         170 |  9600.00 |
+|         171 |  7400.00 |
+|         172 |  7300.00 |
+|         173 |  6100.00 |
+|         174 | 11000.00 |
+|         175 |  8800.00 |
+|         176 |  8600.00 |
+|         177 |  8400.00 |
+|         178 |  7000.00 |
+|         179 |  6200.00 |
+|         202 |  6000.00 |
+|         203 |  6500.00 |
+|         204 | 10000.00 |
+|         206 |  8300.00 |
++-------------+----------+
+40 rows in set (0.02 sec)
+
+MariaDB [csd2204w18]> SELECT FIRST_NAME, LAST_NAME, SALARY
+    -> FROM employees
+    -> WHERE SALARY > (SELECT salary
+    -> FROM employees
+    -> WHERE last_name = 'Bull');
++-------------+------------+----------+
+| FIRST_NAME  | LAST_NAME  | SALARY   |
++-------------+------------+----------+
+| Steven      | King       | 24000.00 |
+| Neena       | Kochhar    | 17000.00 |
+| Lex         | De Haan    | 17000.00 |
+| Alexander   | Hunold     |  9000.00 |
+| Bruce       | Ernst      |  6000.00 |
+| David       | Austin     |  4800.00 |
+| Valli       | Pataballa  |  4800.00 |
+| Diana       | Lorentz    |  4200.00 |
+| Nancy       | Greenberg  | 12000.00 |
+| Daniel      | Faviet     |  9000.00 |
+| John        | Chen       |  8200.00 |
+| Ismael      | Sciarra    |  7700.00 |
+| Jose Manuel | Urman      |  7800.00 |
+| Luis        | Popp       |  6900.00 |
+| Den         | Raphaely   | 11000.00 |
+| Matthew     | Weiss      |  8000.00 |
+| Adam        | Fripp      |  8200.00 |
+| Payam       | Kaufling   |  7900.00 |
+| Shanta      | Vollman    |  6500.00 |
+| Kevin       | Mourgos    |  5800.00 |
+| John        | Russell    | 14000.00 |
+| Karen       | Partners   | 13500.00 |
+| Alberto     | Errazuriz  | 12000.00 |
+| Gerald      | Cambrault  | 11000.00 |
+| Eleni       | Zlotkey    | 10500.00 |
+| Peter       | Tucker     | 10000.00 |
+| David       | Bernstein  |  9500.00 |
+| Peter       | Hall       |  9000.00 |
+| Christopher | Olsen      |  8000.00 |
+| Nanette     | Cambrault  |  7500.00 |
+| Oliver      | Tuvault    |  7000.00 |
+| Janette     | King       | 10000.00 |
+| Patrick     | Sully      |  9500.00 |
+| Allan       | McEwen     |  9000.00 |
+| Lindsey     | Smith      |  8000.00 |
+| Louise      | Doran      |  7500.00 |
+| Sarath      | Sewall     |  7000.00 |
+| Clara       | Vishney    | 10500.00 |
+| Danielle    | Greene     |  9500.00 |
+| Mattea      | Marvins    |  7200.00 |
+| David       | Lee        |  6800.00 |
+| Sundar      | Ande       |  6400.00 |
+| Amit        | Banda      |  6200.00 |
+| Lisa        | Ozer       | 11500.00 |
+| Harrison    | Bloom      | 10000.00 |
+| Tayler      | Fox        |  9600.00 |
+| William     | Smith      |  7400.00 |
+| Elizabeth   | Bates      |  7300.00 |
+| Sundita     | Kumar      |  6100.00 |
+| Ellen       | Abel       | 11000.00 |
+| Alyssa      | Hutton     |  8800.00 |
+| Jonathon    | Taylor     |  8600.00 |
+| Jack        | Livingston |  8400.00 |
+| Kimberely   | Grant      |  7000.00 |
+| Charles     | Johnson    |  6200.00 |
+| Nandita     | Sarchand   |  4200.00 |
+| Jennifer    | Whalen     |  4400.00 |
+| Michael     | Hartstein  | 13000.00 |
+| Pat         | Fay        |  6000.00 |
+| Susan       | Mavris     |  6500.00 |
+| Hermann     | Baer       | 10000.00 |
+| Shelley     | Higgins    | 12000.00 |
+| William     | Gietz      |  8300.00 |
++-------------+------------+----------+
+63 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> SET @i = 0; SELECT i, employee_id
+Query OK, 0 rows affected (0.00 sec)
+
+    -> FROM (SELECT @i := @i + 1 AS i, employee_id
+    -> FROM employees) a WHERE MOD(a.i, 2) = 0;
++------+-------------+
+| i    | employee_id |
++------+-------------+
+|    2 |         101 |
+|    4 |         103 |
+|    6 |         105 |
+|    8 |         107 |
+|   10 |         109 |
+|   12 |         111 |
+|   14 |         113 |
+|   16 |         115 |
+|   18 |         117 |
+|   20 |         119 |
+|   22 |         121 |
+|   24 |         123 |
+|   26 |         125 |
+|   28 |         127 |
+|   30 |         129 |
+|   32 |         131 |
+|   34 |         133 |
+|   36 |         135 |
+|   38 |         137 |
+|   40 |         139 |
+|   42 |         141 |
+|   44 |         143 |
+|   46 |         145 |
+|   48 |         147 |
+|   50 |         149 |
+|   52 |         151 |
+|   54 |         153 |
+|   56 |         155 |
+|   58 |         157 |
+|   60 |         159 |
+|   62 |         161 |
+|   64 |         163 |
+|   66 |         165 |
+|   68 |         167 |
+|   70 |         169 |
+|   72 |         171 |
+|   74 |         173 |
+|   76 |         175 |
+|   78 |         177 |
+|   80 |         179 |
+|   82 |         181 |
+|   84 |         183 |
+|   86 |         185 |
+|   88 |         187 |
+|   90 |         189 |
+|   92 |         191 |
+|   94 |         193 |
+|   96 |         195 |
+|   98 |         197 |
+|  100 |         199 |
+|  102 |         201 |
+|  104 |         203 |
+|  106 |         205 |
++------+-------------+
+53 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> SELECT DISTINCT salary FROM employees e1
+    -> WHERE 5 = (SELECT COUNT(DISTINCT salary)
+    -> FROM employees e2
+    -> WHERE e2.salary >= e1.salary);
++----------+
+| salary   |
++----------+
+| 13000.00 |
++----------+
+1 row in set (0.02 sec)
+
+MariaDB [csd2204w18]> SELECT DISTINCT salary FROM employees e1
+    -> WHERE 4 = (SELECT COUNT(DISTINCT salary)
+    -> FROM employees e2
+    -> WHERE e2.salary <= e1.salary);
++---------+
+| salary  |
++---------+
+| 2500.00 |
++---------+
+1 row in set (0.02 sec)
+
+MariaDB [csd2204w18]> SELECT * FROM (SELECT * FROM employees
+    -> ORDER BY employee_id DESC LIMIT 10) sub
+    -> ORDER BY employee_id ASC;
++-------------+------------+-----------+----------+--------------+------------+------------+----------+----------------+------------+---------------+
+| EMPLOYEE_ID | FIRST_NAME | LAST_NAME | EMAIL    | PHONE_NUMBER | HIRE_DATE  | JOB_ID     | SALARY   | COMMISSION_PCT | MANAGER_ID | DEPARTMENT_ID |
++-------------+------------+-----------+----------+--------------+------------+------------+----------+----------------+------------+---------------+
+|         197 | Kevin      | Feeney    | KFEENEY  | 650.507.9822 | 1987-09-22 | SH_CLERK   |  3000.00 |           0.00 |        124 |            50 |
+|         198 | Donald     | OConnell  | DOCONNEL | 650.507.9833 | 1987-09-23 | SH_CLERK   |  2600.00 |           0.00 |        124 |            50 |
+|         199 | Douglas    | Grant     | DGRANT   | 650.507.9844 | 1987-09-24 | SH_CLERK   |  2600.00 |           0.00 |        124 |            50 |
+|         200 | Jennifer   | Whalen    | JWHALEN  | 515.123.4444 | 1987-09-25 | AD_ASST    |  4400.00 |           0.00 |        101 |            10 |
+|         201 | Michael    | Hartstein | MHARTSTE | 515.123.5555 | 1987-09-26 | MK_MAN     | 13000.00 |           0.00 |        100 |            20 |
+|         202 | Pat        | Fay       | PFAY     | 603.123.6666 | 1987-09-27 | MK_REP     |  6000.00 |           0.00 |        201 |            20 |
+|         203 | Susan      | Mavris    | SMAVRIS  | 515.123.7777 | 1987-09-28 | HR_REP     |  6500.00 |           0.00 |        101 |            40 |
+|         204 | Hermann    | Baer      | HBAER    | 515.123.8888 | 1987-09-29 | PR_REP     | 10000.00 |           0.00 |        101 |            70 |
+|         205 | Shelley    | Higgins   | SHIGGINS | 515.123.8080 | 1987-09-30 | AC_MGR     | 12000.00 |           0.00 |        101 |           110 |
+|         206 | William    | Gietz     | WGIETZ   | 515.123.8181 | 1987-10-01 | AC_ACCOUNT |  8300.00 |           0.00 |        205 |           110 |
++-------------+------------+-----------+----------+--------------+------------+------------+----------+----------------+------------+---------------+
+10 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> SELECT * FROM departments
+    -> WHERE department_id NOT IN (select
+    -> department_id FROM employees);
++---------------+----------------------+------------+-------------+
+| DEPARTMENT_ID | DEPARTMENT_NAME      | MANAGER_ID | LOCATION_ID |
++---------------+----------------------+------------+-------------+
+|           120 | Treasury             |          0 |        1700 |
+|           130 | Corporate Tax        |          0 |        1700 |
+|           140 | Control And Credit   |          0 |        1700 |
+|           150 | Shareholder Services |          0 |        1700 |
+|           160 | Benefits             |          0 |        1700 |
+|           170 | Manufacturing        |          0 |        1700 |
+|           180 | Construction         |          0 |        1700 |
+|           190 | Contracting          |          0 |        1700 |
+|           200 | Operations           |          0 |        1700 |
+|           210 | IT Support           |          0 |        1700 |
+|           220 | NOC                  |          0 |        1700 |
+|           230 | IT Helpdesk          |          0 |        1700 |
+|           240 | Government Sales     |          0 |        1700 |
+|           250 | Retail Sales         |          0 |        1700 |
+|           260 | Recruiting           |          0 |        1700 |
+|           270 | Payroll              |          0 |        1700 |
++---------------+----------------------+------------+-------------+
+16 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> SELECT DISTINCT salary FROM employees a
+    -> WHERE 3 >= (SELECT COUNT(DISTINCT salary)
+    -> FROM employees b
+    -> WHERE b.salary >= a.salary)
+    -> ORDER BY a.salary DESC;
++----------+
+| salary   |
++----------+
+| 24000.00 |
+| 17000.00 |
+| 14000.00 |
++----------+
+3 rows in set (0.01 sec)
+
+MariaDB [csd2204w18]> SELECT DISTINCT salary FROM employees a
+    -> WHERE 3 >= (SELECT COUNT(DISTINCT salary)
+    -> FROM employees b
+    -> WHERE b.salary <= a.salary)
+    -> ORDER BY a.salary DESC;
++---------+
+| salary  |
++---------+
+| 2400.00 |
+| 2200.00 |
+| 2100.00 |
++---------+
+3 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> 
+MariaDB [csd2204w18]> SELECT * FROM employees emp1
+    -> WHERE (5) = (SELECT COUNT(DISTINCT(emp2.salary))
+    -> FROM employees emp2
+    -> WHERE emp2.salary > emp1.salary);
++-------------+------------+-----------+----------+--------------------+------------+--------+----------+----------------+------------+---------------+
+| EMPLOYEE_ID | FIRST_NAME | LAST_NAME | EMAIL    | PHONE_NUMBER       | HIRE_DATE  | JOB_ID | SALARY   | COMMISSION_PCT | MANAGER_ID | DEPARTMENT_ID |
++-------------+------------+-----------+----------+--------------------+------------+--------+----------+----------------+------------+---------------+
+|         108 | Nancy      | Greenberg | NGREENBE | 515.124.4569       | 1987-06-25 | FI_MGR | 12000.00 |           0.00 |        101 |           100 |
+|         147 | Alberto    | Errazuriz | AERRAZUR | 011.44.1344.429278 | 1987-08-03 | SA_MAN | 12000.00 |           0.30 |        100 |            80 |
+|         205 | Shelley    | Higgins   | SHIGGINS | 515.123.8080       | 1987-09-30 | AC_MGR | 12000.00 |           0.00 |        101 |           110 |
++-------------+------------+-----------+----------+--------------------+------------+--------+----------+----------------+------------+---------------+
+3 rows in set (0.02 sec)
+
+MariaDB [csd2204w18]> exit
