@@ -1,0 +1,165 @@
+MariaDB [(none)]> select * from products;
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> use csd2204w18;
+Database changed
+MariaDB [csd2204w18]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | Printer         |    40 |            7 |
+|   12 | Toner cartridge |    54 |            7 |
+|   13 | DVD burner      |    78 |            7 |
++------+-----------------+-------+--------------+
+13 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> create view d10_v1 select * from products;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'select * from products' at line 1
+MariaDB [csd2204w18]> create view d10_v1 AS select * from products;
+Query OK, 0 rows affected (0.50 sec)
+
+MariaDB [csd2204w18]> show tables;
++----------------------+
+| Tables_in_csd2204w18 |
++----------------------+
+| animals              |
+| c1                   |
+| citymaster           |
+| countries            |
+| customers            |
+| d10_v1               |
+| departments          |
+| employees            |
+| j3                   |
+| job_history          |
+| jobs                 |
+| locations            |
+| manu                 |
+| p1                   |
+| persons              |
+| pet                  |
+| products             |
+| regions              |
++----------------------+
+18 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from d10_v1;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | Printer         |    40 |            7 |
+|   12 | Toner cartridge |    54 |            7 |
+|   13 | DVD burner      |    78 |            7 |
++------+-----------------+-------+--------------+
+13 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from d10_v1 where Code >= '6';
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | Printer         |    40 |            7 |
+|   12 | Toner cartridge |    54 |            7 |
+|   13 | DVD burner      |    78 |            7 |
++------+-----------------+-------+--------------+
+8 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from d10_v1 where Code BETWEEN 4 AND 5;
++------+-------------+-------+--------------+
+| Code | Name        | Price | Manufacturer |
++------+-------------+-------+--------------+
+|    4 | Floppy disk |     5 |            6 |
+|    5 | Monitor     |   240 |            1 |
++------+-------------+-------+--------------+
+2 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from d10_v1 where Code BETWEEN 5 AND ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1
+MariaDB [csd2204w18]> select * from d10_v1 where Code BETWEEN 5 AND 3;
+Empty set (0.00 sec)
+
+MariaDB [csd2204w18]> select * from d10_v1 where Code 2 AND 8;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '2 AND 8' at line 1
+MariaDB [csd2204w18]> select * from d10_v1 where Code='2' || Code='8';
++------+---------+-------+--------------+
+| Code | Name    | Price | Manufacturer |
++------+---------+-------+--------------+
+|    2 | Memory  |   120 |            6 |
+|    8 | Printer |   270 |            3 |
++------+---------+-------+--------------+
+2 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> insert into d10_v1('Code','Name','Price','Manufacture') VALUES (14,'card','100','5');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''Code','Name','Price','Manufacture') VALUES (14,'card','100','5')' at line 1
+MariaDB [csd2204w18]> insert into d10_v1('Code','Name','Price','Manufacture') VALUES (14,'card',100,5);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''Code','Name','Price','Manufacture') VALUES (14,'card',100,5)' at line 1
+MariaDB [csd2204w18]> insert into d10_v1('Code','Name','Price','Manufacture') VALUES (14,'card',100,5);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''Code','Name','Price','Manufacture') VALUES (14,'card',100,5)' at line 1
+MariaDB [csd2204w18]> 
+MariaDB [csd2204w18]> 
+MariaDB [csd2204w18]> insert into d10_v1('Code','Name','Price','Manufacture') VALUES (14,'card',100,5);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''Code','Name','Price','Manufacture') VALUES (14,'card',100,5)' at line 1
+MariaDB [csd2204w18]> insert into d10_v1('Code','Name','Price','Manufacturer') VALUES (14,'card',100,5);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''Code','Name','Price','Manufacturer') VALUES (14,'card',100,5)' at line 1
+MariaDB [csd2204w18]> insert into d10_v1(Code,Name,Price,Manufacturer) VALUES (14,'card',100,5);
+Query OK, 1 row affected (0.56 sec)
+
+MariaDB [csd2204w18]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | Printer         |    40 |            7 |
+|   12 | Toner cartridge |    54 |            7 |
+|   13 | DVD burner      |    78 |            7 |
+|   14 | card            |   100 |            5 |
++------+-----------------+-------+--------------+
+14 rows in set (0.00 sec)
+
+MariaDB [csd2204w18]> delete * from products where Code='14';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '* from products where Code='14'' at line 1
+MariaDB [csd2204w18]> delete * from products where Code=14'
+    '> ;
+    '> ;
+    '> sdhsd;
+    '> 
+    '> delete  from products where Code=14;
+    '> 
+    '> 
+    '> 
+    '> 
+    '> 
+    '> 
+    '> 
